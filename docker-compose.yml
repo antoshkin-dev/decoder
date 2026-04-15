@@ -1,0 +1,60 @@
+services:
+# PHP-сервер. Проброс custom.crt нужен для работы curl с локальными серверми, у которых лоакльный центр сертификации
+  phpdeco:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: decoder-phpfpm
+    restart: unless-stopped
+    volumes:
+      - ./decoderapp:/var/www:rw
+      - ./php/logs:/var/log/php:rw
+      - ./php/custom.crt:/usr/local/share/ca-certificates/custom.crt
+      - ./php/custom.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+    networks:
+      - backend
+    env_file:
+      - .env-common
+    command: ["/usr/local/bin/init.sh"]
+
+# Web-сервер NGINX
+  nginxdeco:
+    image: nginx:1.25-alpine
+    container_name: decoder-nginx
+    depends_on:
+      - phpdeco
+    restart: unless-stopped
+    ports:
+      - "8443:443"
+    volumes:
+#      - ./app:/var/www:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./nginx/logs:/var/log/nginx:rw
+    networks:
+      backend:
+      shared:
+        aliases:
+          - decoder.qwer.kz
+
+# REDIS
+  redisdeco:
+    image: redis:7-alpine
+    container_name: decoder-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --save ""
+      --appendonly no
+    networks:
+      - backend
+# Настройка сети проекта
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.248.32/27
+  shared:
+    external: true
+    name: shared-net
