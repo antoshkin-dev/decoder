@@ -1,0 +1,17 @@
+# Deny for files
+*.log
+*.log.*
+*.cer
+*.key
+*.pem
+*.csr
+*.sql.*
+*.sql
+.env*
+*.json
+*.bak
+*.old
+_*.*
+
+# Always add empty file for sync empty folders
+!.gitkeep

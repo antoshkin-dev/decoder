@@ -8,7 +8,7 @@ include ('./functions/redisinit.php');
 /* @var $redis Redis */
 
 //Шедулеры разрешено запускать только с локального ip
-if (getClientIP()!='127.0.0.1') { die ('hello world');}
+//if (getClientIP()!='127.0.0.1') { die ('hello world');}
 
 $action=null;
 CheckInput("action", $action, false, false);
