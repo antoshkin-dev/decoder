@@ -29,7 +29,7 @@
 будет использоваться адрес сервера `deco.qwer.kz` и локальный каталог хост-системы `/opt/decoder`:
 ```
 sudo mkdir /opt/decoder
-sudo chmod 775 /opt/decoder
+sudo chmod 777 /opt/decoder
 ```
 Все действия выполняются с правами пользователя, который заранее был довален в системные группы `docker` и `www-data`:
 `sudo usermod -aG docker $USER`
@@ -87,6 +87,15 @@ ssl_certificate_key /etc/nginx/certs/deco.qwer.kz-key.pem;
 ### Изменения настроек PHP
 Отредактируйте  `./php/custom.ini` под свою среду, например, изменив часовой пояс.  
 
+### Сборка коллекции
+`docker compose up --build -d`
+После окончания процесса сборки, убедитесь, что все контейнеры успешно запущены `docker container ls`:
+```
+6324ada76681   nginx:1.25-alpine   "/docker-entrypoint.…"   44 seconds ago   Up 39 seconds   80/tcp, 0.0.0.0:8443->443/tcp, [::]:8443->443/tcp                              decoder-nginx
+5c39de96182c   redis:7-alpine      "docker-entrypoint.s…"   46 seconds ago   Up 40 seconds   6379/tcp                                                                       decoder-redis
+32e45cec76f4   decoder-phpdeco     "docker-php-entrypoi…"   46 seconds ago   Up 40 seconds   9000/tcp                                                                       decoder-phpfpm
+```
+
 ### Настройка CRON
 Для корректной работы декодера, следует настроить корректные пути в файле задач CRON в коллекции WebAPPs, для этого следует
 отредактировать следующие строки в файле `./cron/crontab` инфраструктуры WebAPPs (для тестовой среды это `/opt/webapp/cron/crontab`):
@@ -95,12 +104,9 @@ ssl_certificate_key /etc/nginx/certs/deco.qwer.kz-key.pem;
 */1  * * * * curl -s -o /var/log/tick.log 'https://decor.qwer.kz/cron.php?action=tick'
 */15 * * * * curl -s -o /var/log/resetsess.log 'https://deco.qwer.kz/cron.php?action=resetsesscounters'
 ```
-### Сборка коллекции
-`docker compose up --build -d`
-После окончания процесса сборки, убедитесь, что все контейнеры успешно запущены `docker container ls`:
-```
-```
+После внесения измений, следует перезагрузить контейнер CRON: `docker container restart av-cron`
 
 ### Дальнейшие шаги
-- Пропишите в ДНС-записях вашей сетевой инфраструктуры адрес до хоста с decoder, например `deco.qwer.kz A IN 192.168.0.10`
-
+- Пропишите в ДНС-записях вашей сетевой инфраструктуры адрес до хоста с decoder, например `deco.qwer.kz A IN 192.168.0.10`;
+- В админ-паннеле WebAPPs, в справочнике глобальных переменных, задайте адрес decoder-сервера и его порт. 
+Затем перейдите в раздел "Декодер-Активация мастер-ключей" и установите мастер ключ для PowerVault.  
