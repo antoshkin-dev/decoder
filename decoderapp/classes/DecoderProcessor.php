@@ -541,7 +541,7 @@ class DecoderProcessor
             $this->MakeAnswer(false, "User session ID is missing");
         }
         
-        $this->CheckMasterKeyOwner($masterkeyname);
+        //$this->CheckMasterKeyOwner($masterkeyname);
 
         //Получаем ключ сессии пользователя
         $usersessionkey=$this->GetSessionKey($usersessionid) OR $this->MakeAnswer(false, "Can't find user session");
