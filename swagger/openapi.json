@@ -1,0 +1,607 @@
+openapi: 3.1.0
+x-stoplight:
+  id: upsnbrso6c8w1
+info:
+  title: openapi
+  version: '1.0'
+  description: 'Простой API-сервис, позволяющий проводить шифрование данных по мастер-ключу'
+  summary: Decoder API сервер
+  contact:
+    name: Anton Vanichkin
+servers:
+  - url: 'https://decoder.qwer.kz:8443/api'
+    description: Сервер декодера
+paths:
+  /newsession:
+    get:
+      summary: Создание сессии
+      tags:
+        - session
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: jxickvile1hho
+                  data:
+                    $ref: '#/components/schemas/session'
+                    x-stoplight:
+                      id: fqi4dagd640ga
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      status: true
+                      description: Session created
+                    data:
+                      sessionid: NewSessionID
+                      sessionkey: NewSessionKey
+        '400':
+          description: Bad Request
+      operationId: get-newsession
+      description: Создание новой пользовательской сессии декодера
+  /ping:
+    post:
+      summary: Ping
+      operationId: post-ping
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: 7fd7owajjhf4s
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      status: true
+                      description: pong
+      tags:
+        - session
+      description: Продление пользовательской сессии декодера по её ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionid:
+                  type: string
+                  x-stoplight:
+                    id: 6px4kksk24lqx
+            examples:
+              Example 1:
+                value:
+                  sessionid: clientsessionid
+        description: ''
+  /checkmasterkey:
+    post:
+      summary: Проверка мастер ключа
+      operationId: post-checkmasterkey
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: dr7pe6kilrdin
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: 5b82bcu0q88g7
+                    properties:
+                      ownerisyou:
+                        type: boolean
+                        x-stoplight:
+                          id: 0x946foegy9na
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      status: true
+                      description: Master key is set
+                    data:
+                      ownerisyou: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: yl4ma4ru28lcf
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      status: false
+                      description: Master key is not initialized
+      tags:
+        - masterkey
+      description: 'Проверяет, задан ли определенный мастер-ключ в памяти декодера'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                masterkeyname:
+                  type: string
+                  x-stoplight:
+                    id: 9sj0te4mv3pw3
+            examples:
+              Example 1:
+                value:
+                  masterkeyname: yourmasterkeyname
+  /setmasterkey:
+    post:
+      summary: Регистрация мастер ключа
+      operationId: post-setmasterkey
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: vtp3z9yd2x2fr
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: 29ceky4nvv0ok
+                    properties:
+                      owner:
+                        type: string
+                        x-stoplight:
+                          id: vjgl5l7g6e9rn
+                      masterkey:
+                        type: string
+                        x-stoplight:
+                          id: uw0x5aucv9pd2
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      status: true
+                      description: Master key is set successfully
+                    data:
+                      owner: 127.0.0.1
+                      masterkey: yourmasterkeyname
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: 0wc3tqka2z0by
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      status: false
+                      description: Master key has another owner
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                masterkeyname:
+                  type: string
+                  x-stoplight:
+                    id: msor4u8a9gga4
+                key:
+                  type: string
+                  x-stoplight:
+                    id: iqq4pwihziew2
+      description: 'Регистрация нового или обновление значения мастер-ключа '
+      tags:
+        - masterkey
+  /destroysession:
+    post:
+      summary: Удаление сессии
+      operationId: post-destroysession
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: m5ylvz13yv18h
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: true
+                      description: Session destroyed
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: vfm3v8wm6fndd
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: false
+                      description: Can't destroy session
+      description: Удаление клиентской сессии декодера
+      tags:
+        - session
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionid:
+                  type: string
+                  x-stoplight:
+                    id: kyhtogc7o9ikq
+        description: ''
+  /cryptbymaster:
+    post:
+      summary: Шифрование мастер-ключом
+      operationId: post-cryptbymaster
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: 311xo2wl6jpuh
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: 04l0r798bfcre
+                    properties:
+                      cryptedtext:
+                        type: string
+                        x-stoplight:
+                          id: nywmjnbd0pulo
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: true
+                      description: data crypted
+                    data:
+                      cryptedtext: cryptedtexthere
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: fr7189gv6itex
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: true
+                      description: Master key is not found
+      description: Шифрует определенным мастер-ключом строку из запроса
+      tags:
+        - decoder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                masterkeyname:
+                  type: string
+                text:
+                  type: string
+            examples:
+              Example 1:
+                value:
+                  masterkeyname: yourmasterkeyname
+                  text: some text to crypt
+  /decryptbymaster:
+    post:
+      summary: Расшифровка по мастер-ключу
+      operationId: post-decryptbymaster
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: pnzarmgbcm4ii
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: yjvuw16pp6fud
+                    properties:
+                      rowtext:
+                        type: string
+                        x-stoplight:
+                          id: nilqhplnjk3ch
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: true
+                      description: decrypted
+                    data:
+                      rowtext: your decoded text
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: abgukslqird4q
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: false
+                      description: Master key has another owner
+      tags:
+        - decoder
+      description: Прямая расшифровка данных по мастер-ключу. Операция достпна только для владельца мастер-ключа
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                masterkeyname:
+                  type: string
+                cryptedtext:
+                  type: string
+            examples:
+              Example 1:
+                value:
+                  masterkeyname: yourmasterkeyname
+                  cryptedtext: cryptedtext
+  /decryptforuser:
+    post:
+      summary: Расшифровка для пользователя
+      operationId: post-decryptforuser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: klhvsnupo7k0w
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: b7n2whrszve2c
+                    properties:
+                      requiredpassword:
+                        type: string
+                        x-stoplight:
+                          id: 3yq6opdkuzu9q
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: true
+                      description: Password for user
+                    data:
+                      requiredpassword: anothercryptedtext
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: d8k697mh4vn27
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: true
+                      description: Master key has another owner
+      description: |-
+        Расшифровка текста, закрытого мастер-ключом и повторное шифрование ключом из сессии клиента декодера.
+        Операция доступна только владельцам мастер-ключей.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                masterkeyname:
+                  type: string
+                cryptedtext:
+                  type: string
+                sessid:
+                  type: string
+            examples:
+              Example 1:
+                value:
+                  masterkeyname: yourmasterkeyname
+                  cryptedtext: cryptedtext
+                  sessid: decodersessionid
+      tags:
+        - decoder
+  /decryptbysession:
+    post:
+      summary: Расшифровка при помощи ключа сессии пользователя
+      operationId: post-decryptbysession
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      description: 'Расшифровка данных, зашифрованных закрытым ключом сессии клиента декодера.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessid:
+                  type: string
+                cryptedtext:
+                  type: string
+      tags:
+        - decoder
+  /changemaster:
+    post:
+      summary: Перешифрование из одного мастер-ключа в другой
+      operationId: post-changemaster
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: i12d10dq9a1xo
+                  data:
+                    type: object
+                    x-stoplight:
+                      id: fpf9m2g670mmm
+                    properties:
+                      cryptedtext:
+                        type: string
+                        x-stoplight:
+                          id: 0yvypylmotp66
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: true
+                      description: data recrypted
+                    data:
+                      cryptedtext: somecryptedtext
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/result'
+                    x-stoplight:
+                      id: n7kmnb7hybuej
+              examples:
+                Example 1:
+                  value:
+                    result:
+                      result: false
+                      description: Master key has another owner
+      description: |-
+        Процесс перешифрования текста из одного мастер-ключа в другой.
+        Запрос должен быть от владельца исходного мастер-ключа.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                srcmasterkey:
+                  type: string
+                dstmasterkey:
+                  type: string
+                cryptedtext:
+                  type: string
+      tags:
+        - decoder
+        - masterkey
+components:
+  schemas:
+    result:
+      type: object
+      description: Результ обработки запроса декодером
+      properties:
+        result:
+          type: boolean
+          x-stoplight:
+            id: ftdvoz9k3exto
+        description:
+          type: string
+          x-stoplight:
+            id: wbg21ru8a7nvy
+    session:
+      type: object
+      properties:
+        sessionid:
+          type: string
+        sessionkey:
+          type: string
+      description: Содержание ответа при обращении к сессии декодера
+tags:
+  - name: cron
+  - name: decoder
+  - name: masterkey
+  - name: session

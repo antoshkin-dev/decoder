@@ -1,5 +1,3 @@
-# Include swagger JSON-file
-!./swagger/*.json
 # Deny for files
 *.log
 *.log.*
@@ -14,6 +12,9 @@
 *.bak
 *.old
 _*.*
+
+# Include swagger JSON-file
+!swagger/*.json
 
 # Always add empty file for sync empty folders
 !.gitkeep
