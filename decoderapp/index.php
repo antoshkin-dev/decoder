@@ -1,3 +1,3 @@
 <?php
-echo ("empty page");
+echo ('{"result":{"status":false,"description":"Unknown"}}');
 ?>

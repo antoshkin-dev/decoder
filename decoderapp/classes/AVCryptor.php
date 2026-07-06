@@ -1,14 +1,31 @@
 <?php
+namespace classes;
 class AVCryptor
 {
-    private $passphrase=null;
-    public $lasterror=null;
-    public $debug=null;
+    private ?string $passphrase=null;
+    
+    /**
+     * Переменная отладочных записей процесс шифрования
+     * @var string
+     */
+    public string $debug="";
+    
+    /**
+     * 
+     * @param string $passphrase кодовая фраза, кодая будет использоваться для операций шифрования
+     */
     function __construct(string $passphrase) 
     {
         $this->passphrase=$passphrase;
     }
-    public function MakeCrypted($cryptthis,$iv=null)
+    
+    /**
+     * Шифрование текста
+     * @param string $cryptthis - текст для шифрования
+     * @param string|null $iv - вектор инициализации
+     * @return string
+     */
+    public function MakeCrypted(string $cryptthis,?string $iv=null) : string
     {
         $this->AddDebug("Text for crypt: {$cryptthis}");
         $cipher="AES-128-CBC";
@@ -25,7 +42,13 @@ class AVCryptor
         //echo "checksum: ***" . base64_encode($checksum) . "***";
         return base64_encode($iv.$checksum.$cryptedtext);
     }
-    public function GetTextBack($encodedstring)
+    
+    /**
+     * Дешифрование текста
+     * @param string $encodedstring - зашифрованные данные в формате Base64
+     * @return bool|string
+     */
+    public function GetTextBack(string $encodedstring) : bool|string
     {
         $rowcryptedtext = base64_decode($encodedstring);
         $cipher="AES-128-CBC";
@@ -59,7 +82,11 @@ class AVCryptor
             return false;
         }
     }
-    private function AddDebug($text)
+    /**
+     * Добавление отладочных записей в переменную отладки
+     * @param type $text
+     */
+    private function AddDebug(string $text) : void
     {
         $this->debug.=$text . "\r\n";
     }

@@ -1,4 +1,5 @@
 <?php
+use Redis;
 $redis = new Redis();
 //Connecting to Redis
 $redis->connect('decoder-redis', 6379);
