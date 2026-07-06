@@ -23,6 +23,7 @@ services:
     container_name: decoder-nginx
     depends_on:
       - phpdeco
+      - swaggerdeco
     restart: unless-stopped
     ports:
       - "8443:443"
@@ -53,6 +54,7 @@ services:
   swaggerdeco:
     image: swaggerapi/swagger-ui
     container_name: decoder-swagger
+    restart: unless-stopped
     networks:
       - backend
 #    ports:
